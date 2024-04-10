@@ -11,7 +11,7 @@ use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
-    // middleware sanctum pour exiger une preuve de connexion : soit le token, soit le cookie csrf
+    // middleware sanctum pour exiger une preuve de connexion : soit le token, soit les cookies csrf + de session
     // appliqué sur toutes les routes sauf store (pas besoin d'être connecté pour créer un utilisateur)
     // middleware admin appliqué sur route index (liste des utilisateurs)
     public function __construct()
@@ -114,7 +114,7 @@ class UserController extends Controller
             $imageName = time() . '.' . $image->extension();
             $image->move(public_path('images'), $imageName);
 
-            $imagePath = 'images/' . $user->image;      // on supprime l'ancienne image
+            $imagePath = 'images/' . $user->image;      // on supprime l'ancienne image (si existante)
             if (File::exists(public_path($imagePath))) {
                 File::delete(public_path($imagePath));
             }

@@ -49,14 +49,8 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        // déconnecte de la session en cours
+        // déconnecte de la session en cours et invalide le token du cookie de session
         Auth::guard('web')->logout();
-
-        // // supprime la session en cours
-        // $request->session()->invalidate();
-
-        // // régénère la valeur du cookie CSRF de la session
-        // $request->session()->regenerateToken();
 
         return response()->json([
             'status' => true,

@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 
 class PostController extends Controller
 {
-    // middleware sanctum pour exiger une preuve de connexion : soit le token, soit le cookie csrf
-    // appliqué sur toutes les routes sauf index (pas besoin d'être connecté pour voir les messages sur l'accueil)
+    // middleware sanctum pour exiger une preuve de connexion : soit le token, soit les cookies csrf + de session
+    // appliqué sur toutes les routes sauf index (pas besoin d'être connecté pour voir les messages sur l'accueil
+    // ou pour consulter un message en particulier)
     public function __construct()
     {
-       $this->middleware('auth:sanctum')->except('index');
+        $this->middleware('auth:sanctum')->except('index', 'show');
     }
 
 
@@ -27,7 +29,7 @@ class PostController extends Controller
 
         // on charge leurs auteurs et leurs commentaires (avec auteurs)
         // => commenté car déjà chargé via $with dans les modèles Post et Comment 
-        $posts->load('user', 'comments.user');
+        //$posts->load('user', 'comments.user');
 
         // On retourne les posts en JSON 
         return response()->json([
@@ -43,6 +45,9 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
+        // policy pour vérifier que l'utilisateur a bien le droit de créer un post
+        $this->authorize('create', Post::class);
+
         // sauvegarde du post en bdd
         $post = Post::create($request->all());
 
@@ -81,16 +86,24 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request, Post $post)
     {
         // policy pour vérifier que l'utilisateur peut modifier le post
-       // $this->authorize('update', $post);
+        $this->authorize('update', $post);
 
         // modification post en bdd
-        $post->update($request->all());
+        $post->update($request->except('image'));
 
         // sauvegarde de l'image (si envoyée)
         if ($request->image) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->extension();
             $image->move(public_path('images'), $imageName);
+
+            // on supprime l'ancienne image si existante
+            $imagePath = 'images/' . $post->image;
+
+            if (File::exists(public_path($imagePath))) {
+                File::delete(public_path($imagePath));
+            }
+
             $post->update(['image' => $imageName]);
         }
 
@@ -108,9 +121,16 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         // policy pour vérifier que l'utilisateur peut supprimer le post
-        //$this->authorize('delete', $post);
+        $this->authorize('delete', $post);
 
         $post->delete(); // suppression post via syntaxe Eloquent
+
+        // on supprime son image (plus besoin)
+        $imagePath = 'images/' . $post->image;
+
+        if (File::exists(public_path($imagePath))) {
+            File::delete(public_path($imagePath));
+        }
 
         return response()->json([
             'status' => true,
