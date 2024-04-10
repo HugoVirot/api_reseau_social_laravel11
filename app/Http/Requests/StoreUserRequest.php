@@ -41,6 +41,7 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'pseudo.required' => 'Le pseudo est requis.',
+            'pseudo.unique' => 'Le pseudo choisi est déjà utilisé.',
             'pseudo.string' => 'Le pseudo doit être une chaîne de caractères.',
             'pseudo.min' => 'Le pseudo doit faire au moins 4 caractères.',
             'pseudo.max' => 'Le pseudo ne doit pas dépasser 25 caractères.',
@@ -49,8 +50,13 @@ class StoreUserRequest extends FormRequest
             'email.email' => 'Email invalide.',
             'pseudo.min' => 'L\'email doit faire au moins 7 caractères.',
             'pseudo.max' => 'L\'email ne doit pas dépasser 50 caractères.',
-            'email.unique' => 'Email déjà utilisé.',
+            'email.unique' => 'L\'email choisi est déjà utilisé.',
             'password.required' => 'Le mot de passe est requis.',
+            'password.min' => 'Le mot de passe doit faire au moins 8 caractères.',
+            'password.mixed' => 'Le mot de passe doit contenir au moins 1 minuscule et une majuscule.',
+            'password.letters' => 'Le mot de passe doit contenir au moins 1 lettre.',
+            'password.symbols' => 'Le mot de passe doit contenir au moins 1 caractère spécial parmi ! @ # $ % ^ & * ?.',
+            'password.numbers' => 'Le mot de passe doit contenir au moins 1 chiffre.',
             'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
             'password.confirmed' => 'Confirmation du mot de passe incorrecte.',
         ];

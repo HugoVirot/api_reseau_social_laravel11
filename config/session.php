@@ -169,8 +169,8 @@ return [
     | the cookie from being sent to you when it can't be done securely.
     |
     */
-
-    'secure' => env('SESSION_SECURE_COOKIE'),
+                                              // laisser comme cela pour localhost (car http)
+    'secure' => env('SESSION_SECURE_COOKIE'), // à définir sur true lors de la mise en production
 
     /*
     |--------------------------------------------------------------------------

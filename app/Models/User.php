@@ -6,10 +6,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -43,8 +44,7 @@ class User extends Authenticatable
         ];
     }
 
-    //charger automatiquement le rôle de l'utilisateur
-    protected $with = ['role'];
+
 
     // nom au pluriel car un user peut poster plusieurs quacks
     // cardinalité 0,n
@@ -66,6 +66,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+        //charger automatiquement le rôle de l'utilisateur
+        protected $with = ['role'];
 
     public function isAdmin()
     {

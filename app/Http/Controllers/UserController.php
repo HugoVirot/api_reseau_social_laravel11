@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\File;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -12,9 +13,11 @@ class UserController extends Controller
 {
     // middleware sanctum pour exiger une preuve de connexion : soit le token, soit le cookie csrf
     // appliqué sur toutes les routes sauf store (pas besoin d'être connecté pour créer un utilisateur)
+    // middleware admin appliqué sur route index (liste des utilisateurs)
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except('store');
+        $this->middleware('admin')->only('index');
     }
 
 
@@ -25,6 +28,11 @@ class UserController extends Controller
     {
         // On récupère tous les utilisateurs
         $users = User::all();
+
+        // on applique la vérification de la fonction viewAny de la UserPolicy
+        // => seul l'admin peut accéder à la liste des messages
+        // => résultat identique à l'application du middleware "admin"
+        //$this->authorize('viewAny', $users); 
 
         // On retourne les utilisateurs en JSON 
         return response()->json([
@@ -50,13 +58,13 @@ class UserController extends Controller
 
         // sauvegarde de l'image (si envoyée)
         if ($request->image) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->extension();
-            $image->move(public_path('images'), $imageName);
-            $user->update(['image' => $imageName]);
+            $image = $request->file('image');   // on récupère l'image transmise
+            $imageName = time() . '.' . $image->extension();  // on lui donne un nom
+            $image->move(public_path('images'), $imageName); // on la déplace dans le dossier public/images
+            $user->update(['image' => $imageName]); // on met à jour l'utilisateur
         }
 
-        // on retourne l'utilisateur créé en json avec un code de succès (201)
+        // on retourne l'utilisateur créé en json avec un code de succès (201 = création réussie)
         return response()->json([
             'status' => true,
             'message' => 'Utilisateur créé avec succès',
@@ -70,6 +78,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        // application méthode view de la UserPolicy => seul le user peut voir son profil (ou l'admin)
+        $this->authorize('view', $user);
+
         // on retourne l'utilisateur en json 
         return response()->json([
             'status' => true,
@@ -85,9 +96,12 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         // policy pour vérifier que l'utilisateur peut modifier le compte
-        //$this->authorize('update', $user);
+        // critère : il ne peut modifier que son propre compte 
+        $this->authorize('update', $user);
 
         // On modifie les informations de l'utilisateur
+
+        // email (si fourni)
         if ($request->email) {
             $user->update([
                 'email' => $request->email
@@ -96,10 +110,15 @@ class UserController extends Controller
 
         // sauvegarde de la nouvelle image (si envoyée)
         if ($request->image) {
-            //dd("je passe dans modif image");
             $image = $request->file('image');
             $imageName = time() . '.' . $image->extension();
             $image->move(public_path('images'), $imageName);
+
+            $imagePath = 'images/' . $user->image;      // on supprime l'ancienne image
+            if (File::exists(public_path($imagePath))) {
+                File::delete(public_path($imagePath));
+            }
+
             $user->update(['image' => $imageName]);
         }
 
@@ -137,11 +156,19 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // policy pour vérifier que l'utilisateur peut supprimer le compte
-        //$this->authorize('delete', $user);
+        // policy pour vérifier que l'utilisateur est autorisé à supprimer le compte
+        // critère : seul l'utilisateur peut supprimer son compte (ou l'admin)
+        $this->authorize('delete', $user);
 
-        // on supprimer l'utilisateur en base de données
+        // on supprime l'utilisateur en base de données
         $user->delete();
+
+        // on supprime son image de profil (plus besoin)
+        $imagePath = 'images/' . $user->image;
+
+        if (File::exists(public_path($imagePath))) {
+            File::delete(public_path($imagePath));
+        }
 
         // on retourne la réponse contenant l'utilisateur supprimé
         return response()->json([
