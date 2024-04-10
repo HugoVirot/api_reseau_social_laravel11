@@ -22,8 +22,8 @@ class UpdateCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => 'required|string|min:15|max:3000',
-            'tags' => 'required|string|min:5|max:50',
+            'content' => 'nullable|string|min:15|max:3000',
+            'tags' => 'nullable|string|min:5|max:50',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
         ];
     }
@@ -33,12 +33,10 @@ class UpdateCommentRequest extends FormRequest
     {
         return [
             //critères contenu
-            'content.required' => 'Le contenu est requis.',
             'content.string' => 'Le contenu doit être une chaîne de caractères.',
             'content.min' => 'Le contenu doit faire au moins 15 caractères.',
             'content.max' => 'Le contenu ne doit pas dépasser 3000 caractères.',
             //critères tags
-            'tags.required' => 'Les tags sont requis.',
             'tags.string' => 'Les tags doivent être une chaîne de caractères.',
             'tags.min' => 'Les tags doivent faire au moins 5 caractères.',
             'tags.max' => 'Les tags ne doivent pas dépasser 50 caractères.',

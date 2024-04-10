@@ -9,14 +9,6 @@ use Illuminate\Support\Facades\Auth;
 class PostPolicy
 {
     /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return Auth::check(); // seul le user connecté peut poster unm message
-    }
-
-    /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, Post $post): bool

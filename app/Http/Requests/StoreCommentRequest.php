@@ -47,6 +47,12 @@ class StoreCommentRequest extends FormRequest
             'image.image' => 'L\'image doit être un fichier de type image.',
             'image.mimes' => 'L\'image doit être un fichier de type jpg, jpeg, png ou svg.',
             'image.max' => 'L\'image ne doit pas dépasser 2 Mo.',
+            //critères user_id
+            'user_id.required' => 'Le user_id est requis.',
+            'user_id.integer' => 'Le user_id doit être un nombre.',
+            //critères post_id
+            'post_id.required' => 'Le post_id est requis.',
+            'post_id.integer' => 'Le post_id doit être un nombre.',
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 
@@ -12,7 +13,8 @@ class CommentController extends Controller
     // middleware sanctum pour exiger une preuve de connexion : soit le token, soit le cookie csrf
     public function __construct()
     {
-        //$this->middleware('auth:sanctum');
+        $this->middleware('auth:sanctum')->except('show');
+        $this->middleware('admin')->only('index');
     }
 
     /**
@@ -74,16 +76,23 @@ class CommentController extends Controller
     public function update(UpdateCommentRequest $request, Comment $comment)
     {
         // policy pour vérifier que l'utilisateur peut modifier le commentaire
-        //$this->authorize('update', $comment);
+        $this->authorize('update', $comment);
 
         // sauvegarde des modifications en bdd
-        $comment->update($request->all());
+        $comment->update($request->except('image'));
 
         // sauvegarde de l'image (si envoyée)
         if ($request->image) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->extension();
             $image->move(public_path('images'), $imageName);
+
+            // on supprime l'ancienne image si existante
+            $imagePath = 'images/' . $comment->image;
+
+            if (File::exists(public_path($imagePath))) {
+                File::delete(public_path($imagePath));
+            }
             $comment->update(['image' => $imageName]);
         }
 
@@ -100,9 +109,16 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         // policy pour vérifier que l'utilisateur peut supprimer le commentaire
-        //$this->authorize('delete', $comment);
+        $this->authorize('delete', $comment);
 
         $comment->delete(); // suppression commentaire via syntaxe Eloquent
+
+        // on supprime son image si existante (plus besoin)
+        $imagePath = 'images/' . $comment->image;
+        
+        if (File::exists(public_path($imagePath))) {
+            File::delete(public_path($imagePath));
+        }
 
         return response()->json([
             'status' => true,

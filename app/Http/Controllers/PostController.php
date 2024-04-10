@@ -45,9 +45,6 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        // policy pour vérifier que l'utilisateur a bien le droit de créer un post
-        $this->authorize('create', Post::class);
-
         // sauvegarde du post en bdd
         $post = Post::create($request->all());
 
@@ -125,7 +122,7 @@ class PostController extends Controller
 
         $post->delete(); // suppression post via syntaxe Eloquent
 
-        // on supprime son image (plus besoin)
+        // on supprime son image si existante (plus besoin)
         $imagePath = 'images/' . $post->image;
 
         if (File::exists(public_path($imagePath))) {
