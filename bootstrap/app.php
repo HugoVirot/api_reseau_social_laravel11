@@ -15,10 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi(); // middleware Sanctum pour authentification SPA (stateful)
-        $middleware->append(StartSession::class); // idem (pour bien lancer la session)
         $middleware->alias([
             "admin" => Admin::class
         ]);
+        // $middleware->validateCsrfTokens(except: [ // exclure des routes de la vérif CSRF (utile si erreur 419 sur routes non sanctum)
+        //     'http://localhost:8000/api/login', // utile pour login car on n'a pas encore obtenu de cookie csrf 
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

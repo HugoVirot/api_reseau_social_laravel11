@@ -24,11 +24,6 @@ class LoginController extends Controller
 
         // Laravel tente de connecter le user si l'email existe ET si le mdp en clair correspond à celui hashé 
         if (Auth::attempt($credentials)) {
-            
-            // si identifiants ok, on commence par régénérer la session pour éviter la "fixation de session"
-            // il s'agit du vol de l'identifiant de session par une tierce personne
-            // https://fr.wikipedia.org/wiki/Fixation_de_session
-            $request->session()->regenerate();
 
             // si la connexion fonctionne, on récupère l'utilisateur et on charge son rôle
             $authUser = User::find(Auth::user()->id)->load('role');
