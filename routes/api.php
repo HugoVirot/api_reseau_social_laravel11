@@ -19,7 +19,8 @@ Route::post('login', [LoginController::class, 'login'])->name('login');
 // déconnexion
 Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth:web');
 
-// ****************** Routes Apiresource ****************
+
+// ****************** Routes ApiResource ****************
 
 // route ressource users
 Route::apiResource("users", UserController::class);

@@ -15,7 +15,8 @@ class PostController extends Controller
     // ou pour consulter un message en particulier)
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except('index', 'show');
+        //$this->middleware('auth:sanctum')->except('index', 'show');
+        $this->middleware('auth:sanctum'); // pour tester sanctum sur la liste des posts
     }
 
 

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -24,9 +25,15 @@ class LoginController extends Controller
 
         // Laravel tente de connecter le user si l'email existe ET si le mdp en clair correspond à celui hashé 
         if (Auth::attempt($credentials)) {
-
-            // si la connexion fonctionne, on récupère l'utilisateur et on charge son rôle
-            $authUser = User::find(Auth::user()->id)->load('role');
+            $request->session()->regenerate();
+            // si la connexion fonctionne, on renvoie la réponse contenant le user connecté 
+            // return response()->json([
+            //     'status' => true,
+            //     'message' => 'Vous êtes connecté',
+            //     'user' => Auth::user()
+            // ]);            // si la connexion fonctionne, on récupère l'utilisateur et on charge son rôle
+            $authUser = User::find(Auth::user()->id);
+            $authUser->load('role');
 
             // on renvoie la réponse 
             return response()->json([$authUser, 'Vous êtes connecté']);
@@ -36,7 +43,7 @@ class LoginController extends Controller
         }
     }
 
-     /**
+    /**
      * Tenter la connexion utilisateur.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -44,6 +51,7 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        //dd($request);
         // déconnecte de la session en cours et invalide le token du cookie de session
         Auth::guard('web')->logout();
 
@@ -53,4 +61,3 @@ class LoginController extends Controller
         ]);
     }
 }
-

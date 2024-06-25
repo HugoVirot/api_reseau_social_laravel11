@@ -44,7 +44,8 @@ class User extends Authenticatable
         ];
     }
 
-
+    //charger automatiquement le rôle de l'utilisateur
+    protected $with = ['role'];
 
     // nom au pluriel car un user peut poster plusieurs quacks
     // cardinalité 0,n
@@ -66,9 +67,6 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
-
-        //charger automatiquement le rôle de l'utilisateur
-        protected $with = ['role'];
 
     public function isAdmin()
     {
