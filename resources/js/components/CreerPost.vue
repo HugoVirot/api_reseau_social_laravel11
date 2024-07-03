@@ -82,28 +82,3 @@ const sendPost = async () => {
 }
 
 </script>
-
-<style scoped lang="scss">
-@import '../../sass/style.scss';
-
-h2 {
-    color: white
-}
-
-.card {
-    color: $mainColor !important
-}
-
-.card-header {
-    color: white;
-    background-color: $mainColor;
-}
-
-.card-body {
-    background-color: $secondColor;
-}
-
-input {
-    color : $mainColor !important
-}
-</style>

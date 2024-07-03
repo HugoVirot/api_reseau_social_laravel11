@@ -25,18 +25,13 @@ class LoginController extends Controller
 
         // Laravel tente de connecter le user si l'email existe ET si le mdp en clair correspond à celui hashé 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+            //$request->session()->regenerate();
             // si la connexion fonctionne, on renvoie la réponse contenant le user connecté 
-            // return response()->json([
-            //     'status' => true,
-            //     'message' => 'Vous êtes connecté',
-            //     'user' => Auth::user()
-            // ]);            // si la connexion fonctionne, on récupère l'utilisateur et on charge son rôle
-            $authUser = User::find(Auth::user()->id);
-            $authUser->load('role');
-
-            // on renvoie la réponse 
-            return response()->json([$authUser, 'Vous êtes connecté']);
+            return response()->json([
+                'status' => true,
+                'message' => 'Vous êtes connecté',
+                'user' => Auth::user()
+            ]);
         } else {
             // si échec de la connexion, on renvoie un message d'erreur
             return response()->json(['Echec de la connexion.', 'errors' => 'L\'utilisateur n\'existe pas ou le mot de passe est incorrect']);

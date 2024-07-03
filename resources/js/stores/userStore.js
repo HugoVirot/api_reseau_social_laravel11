@@ -20,7 +20,7 @@ export const useUserStore = defineStore({
             this.pseudo = userData.pseudo
             this.email = userData.email
             this.id = userData.id
-            // this.role = userData.role.role
+            this.role = userData.role.role
             this.userLoggedIn = true
         },
     },

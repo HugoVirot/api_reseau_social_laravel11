@@ -6,10 +6,10 @@
         </div>
         <div class="card-header row px-5">
             <div class="col-6 text-start">
-                posté par <span class="fw-bold">{{ post.user.pseudo }}</span>
+                posté par <router-link :to="`/profil/${post.user.id}`" class="fw-bold">{{ post.user.pseudo }}</router-link>
             </div>
             <div class="col-6 text-end">
-                posté le {{ post.created_at.substring(0, 10) }}
+                posté le {{ post.created_at.substring(0, 10)}} à {{ post.created_at.substring(11, 19) }}
             </div>
         </div>
 
@@ -24,7 +24,7 @@
                 {{ post.content }}
             </p>
 
-            <div v-if="userStore.userLoggedIn && userStore.id == post.id || userStore.role == 'admin'" class="row mt-3">
+            <div v-if="userStore.userLoggedIn && userStore.id == post.user_id || userStore.role == 'admin'" class="row mt-3">
                 <!--********************** bouton modifier => mène à la page de modification du message ********************-->
                 <div class="col-6 text-center">
                     <router-link :to="`modifierpost/${post.id}`">
@@ -60,15 +60,14 @@ const props = defineProps({
 
 const deletePost = async () => {
 
-    await axios.delete("http://localhost:8000/api/posts/" + props.post.id)
+    await axios.delete("/api/posts/" + props.post.id)
         .then(response => {
             alert("Suppression réussie !")
-            router.push('/')
+            router.go(0) // recharger l'accueil pour récupérer la liste des posts (router.push('/') ne recharge pas)
         })
         .catch(error => {
             if (error.response.status == "403") {
                 alert("Vous n'avez pas l'autorisation de supprimer ce message !")
-                router.push('/')
             } else {
                 console.log(error.response)
             }

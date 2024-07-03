@@ -71,12 +71,11 @@ const logIn = async () => {
 
         .then(() => {
             // on tente la connexion
-            axios.post('/login', { email: email.value, password: password.value })
+            axios.post('/api/login', { email: email.value, password: password.value })
 
                 .then(response => {
-                    console.log(response)
                     // si elle réussit : stockage des données utilisateur reçues dans le localstorage via le userStore
-                    userStore.storeUserData(response.data[0])
+                    userStore.storeUserData(response.data.user)
                     // redirection vers un composant affichant le message de succès "vous êtes connecté"         
                     router.push('/')
                     // si elle échoue : on affiche la ou les erreurs rencontrée(s)
@@ -93,19 +92,3 @@ const logIn = async () => {
 }
 
 </script>
-
-<style scoped lang="scss">
-@import '../../sass/style.scss';
-
-.card-header {
-    color : white;
-    background-color: $mainColor;
-}
-
-.card-body {
-    color: $mainColor;
-    background-color: $secondColor;
-}
-
-
-</style>

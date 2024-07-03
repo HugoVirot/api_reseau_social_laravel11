@@ -37,7 +37,8 @@ Route::apiResource("comments", CommentController::class);
 // récupérer l'utilisateur connecté (nouvelle route Sanctum dans Laravel 11)
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+});
+//->middleware('auth:sanctum');
 
 // réponse personnalisée renvoyée en cas de demande d'une route non-existante (ereur 404)
 Route::fallback(function () {

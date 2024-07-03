@@ -11,7 +11,7 @@
             <div class="row justify-content-center p-2">
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header text-white  text-center fs-5">changez les informations
+                        <div class="card-header  text-center fs-5">changez les informations
                             souhaitées
                         </div>
 

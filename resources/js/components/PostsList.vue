@@ -14,8 +14,10 @@ import { onBeforeMount } from 'vue';
 const postStore = usePostStore()
 
 onBeforeMount(async () => {
-    await axios.get("http://localhost:8000/api/posts")
-        .then(response => postStore.storePosts(response.data.posts))
+    await axios.get("/api/posts")
+        .then(response => {
+        console.log(response)
+        postStore.storePosts(response.data.posts)})
         .catch(error => console.log(error))
 })
 </script>

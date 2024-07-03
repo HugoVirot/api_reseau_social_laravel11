@@ -16,7 +16,7 @@ class UserController extends Controller
     // middleware admin appliqué sur route index (liste des utilisateurs)
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except('store');
+        $this->middleware('auth:sanctum')->except('store', 'show');
         $this->middleware('admin')->only('index');
     }
 
@@ -78,15 +78,12 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        // application méthode view de la UserPolicy => seul le user peut voir son profil (ou l'admin)
-        $this->authorize('view', $user);
-
         // on retourne l'utilisateur en json 
         return response()->json([
             'status' => true,
             'message' => 'Utilisateur récupéré avec succès',
-            'user' => $user->load('posts')  // on charge ses posts (pour les afficher sur son profil)
-        ]);
+            'user' => $user->load('posts')->makeHidden(['email'])  // on charge ses posts (pour les afficher sur son profil)
+        ]);                                                        // on masque l'email avec makeHidden (pas nécessaire ici)
     }
 
 

@@ -239,12 +239,7 @@
 
               <div v-if="politique" class="form-group row mt-3 text-center">
                 <div class="col-md-6 offset-md-3">
-                  <button
-                    type="submit"
-                    class="btn btn-lg px-5 rounded-pill text-white"
-                  >
-                    Valider
-                  </button>
+                  <button type="submit" class="mt-2">Valider</button>
                 </div>
               </div>
             </form>
@@ -324,7 +319,7 @@ const checkPassword = (password) => {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import "../../sass/style.scss";
 
 .greenIcon {
@@ -341,10 +336,5 @@ const checkPassword = (password) => {
 
 .fa-xmark {
   color: red;
-}
-
-button {
-  color: $mainColor !important;
-  background-color: $secondColor;
 }
 </style>
