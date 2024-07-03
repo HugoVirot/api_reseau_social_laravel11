@@ -32,7 +32,7 @@
                             <div class="form-group row m-2">
                                 <label for="tags" class="col-md-4 col-form-label text-md-right">tags</label>
                                 <div class="col-md-6">
-                                    <input v-model="tags" id="tags" type="text" class="form-control" name="tags"
+                                    <input v-model="tags" id="tags" type="text" class="form-control text-dark" name="tags"
                                         required autocomplete="tags">
                                 </div>
                             </div>
@@ -73,7 +73,7 @@ const sendPost = async () => {
     await axios.post('http://localhost:8000/api/posts', { content: content.value, tags: tags.value, user_id: userStore.id })
 
         .then(response => {
-            alert("Message créé avec succès !")
+            alert("Commentaire créé avec succès !")
            router.go(0) // force la page à se recharger pour récupérer la nouvelle liste des posts
 
         }).catch((error) => {

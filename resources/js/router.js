@@ -38,6 +38,11 @@ const router = createRouter({
       name: 'modifierpost',
       component: () => import('./components/ModifierPost.vue')
     },
+    {
+      path: '/modifiercomment/:id',
+      name: 'modifiercomment',
+      component: () => import('./components/ModifierComment.vue')
+    },
   ]
 })
 

@@ -74,6 +74,7 @@ const logIn = async () => {
             axios.post('/api/login', { email: email.value, password: password.value })
 
                 .then(response => {
+                    console.log('.then')
                     // si elle réussit : stockage des données utilisateur reçues dans le localstorage via le userStore
                     userStore.storeUserData(response.data.user)
                     // redirection vers un composant affichant le message de succès "vous êtes connecté"         
@@ -82,7 +83,7 @@ const logIn = async () => {
 
                 }).catch((error) => {
                     console.log(error);
-                    // validationErrors.value = error.response.data.errors
+                    validationErrors.value = error.response.data.errors
                 })
 
             // si la requête d'initialisation de la protection CSRF a échoué, on affiche ce message
