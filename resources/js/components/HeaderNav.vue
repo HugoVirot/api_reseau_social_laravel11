@@ -1,10 +1,6 @@
 <template>
   <header class="sticky-top">
-    <div
-      class="container-fluid pt-3"
-      id="headertop"
-      data-bs-theme="dark"
-    >
+    <div class="container-fluid pt-3" id="headertop" data-bs-theme="dark">
       <!-- ************************** logo ***********************-->
 
       <div class="d-flex flex-column mx-auto text-center">
@@ -110,14 +106,28 @@ const router = useRouter();
 
 const userStore = useUserStore();
 
-const logOutUser = () => {
+const logOutUser = async () => {
   // on réinitialise le store
   userStore.$reset();
 
-  axios.post("/api/logout");
+  // axios.post("/api/logout");
+  try {
+    await axios.post("/logout");
 
-  // on redirige vers l'accueil
-  router.push("/");
+    // supprimer les cookies csrf + de session
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+
+    // on redirige vers l'accueil
+    router.push("/");
+
+  } catch (error) {
+    console.error("Error logging out:", error);
+  }
+
 };
 </script>
 
