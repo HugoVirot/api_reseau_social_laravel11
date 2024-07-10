@@ -9,6 +9,7 @@
 
 footer {
     background-color: $mainColor;
-    color: white
+    color: white;
+    margin-top: auto
 }
 </style>

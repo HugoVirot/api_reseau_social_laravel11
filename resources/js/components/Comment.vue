@@ -28,21 +28,21 @@
         {{ comment.content }}
       </p>
 
-      <div
-        v-if="
-          (userStore.userLoggedIn && userStore.id == comment.id) ||
-          userStore.role == 'admin'
-        "
-        class="row mt-3"
-      >
+      <div v-if="userStore.userLoggedIn" class="row mt-3">
+
         <!--********************** bouton modifier => mène à la page de modification du message ********************-->
-        <div class="col-6 text-center">
+
+        <!-- je ne vois le bouton "modifier" que si je suis l'auteur du commentaire ou l'admin -->
+        <div class="col-6 text-center" v-if="userStore.id == comment.user_id || userStore.role == 'admin'">
           <router-link :to="`modifiercomment/${comment.id}`">
             <button class="btn btn-warning mx-auto">modifier</button>
           </router-link>
         </div>
+
         <!--******************************************** bouton supprimer ******************************************-->
-        <div class="col-6 text-center">
+
+        <!-- je ne vois le bouton "supprimer" que si je suis l'auteur du commentaire ou l'auteur du post associé ou l'admin -->
+        <div class="col-6 text-center mx-auto" v-if="userStore.id == comment.user_id || userStore.id == postAuthorID || userStore.role == 'admin'">
           <button @click="deleteComment()" class="btn btn-danger">
             Supprimer
           </button>
@@ -54,9 +54,9 @@
 
 <script setup>
 import { useUserStore } from "../stores/userStore";
-import { useRouter } from "vue-router"
+import { useRouter } from "vue-router";
 
-const props = defineProps(["comment"]);
+const props = defineProps(["comment", "postAuthorID"]);
 const userStore = useUserStore();
 const router = useRouter();
 
@@ -69,7 +69,7 @@ const deleteComment = async () => {
       router.go(0); // recharger l'accueil pour récupérer la liste des posts (router.push('/') ne recharge pas)
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       if (error.response.status == "403") {
         alert("Vous n'avez pas l'autorisation de supprimer ce commentaire !");
       } else {

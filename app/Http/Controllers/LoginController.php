@@ -25,7 +25,9 @@ class LoginController extends Controller
 
         // Laravel tente de connecter le user si l'email existe ET si le mdp en clair correspond à celui hashé 
         if (Auth::attempt($credentials)) {
-            //$request->session()->regenerate();
+            // forcer la régénération du token csrf
+            //https://laracasts.com/discuss/channels/laravel/is-it-really-necessary-to-call-session-regenerate-after-login
+            $request->session()->regenerate();
             // si la connexion fonctionne, on renvoie la réponse contenant le user connecté 
             return response()->json([
                 'status' => true,
@@ -34,7 +36,11 @@ class LoginController extends Controller
             ]);
         } else {
             // si échec de la connexion, on renvoie un message d'erreur
-            return response()->json(['Echec de la connexion.', 'errors' => 'L\'utilisateur n\'existe pas ou le mot de passe est incorrect']);
+            return response()->json([
+                'status' => false,
+                'message' => 'Echec de la connexion.',
+                'errors' => ['L\'utilisateur n\'existe pas ou le mot de passe est incorrect']
+            ], 401);
         }
     }
 

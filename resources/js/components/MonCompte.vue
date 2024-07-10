@@ -1,17 +1,17 @@
 <template>
-  <div class="p-5">
+  <div class="p-3">
     <i class="fa-solid fa-3x fa-user-check"></i>
     <h1 class="mt-2">Mon Compte</h1>
   </div>
 
-  <div class="container-fluid p-3 p-lg-4">
+  <div class="container-fluid px-3 p-lg-4">
     <!-- composant affichant les erreurs de validation des formulaires -->
     <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
 
-    <div class="row justify-content-center p-2 p-lg-4">
-      <h2 class="mx-auto text-white mb-5">
+    <div class="row justify-content-center px-2 p-lg-4">
+      <p class="mx-auto mb-5">
         Bienvenue, {{ userStore.pseudo }} !
-      </h2>
+      </p>
       <div class="col-md-8 p-1">
         <div class="card">
           <div class="card-header mb-3 fs-5">Modifier mes infos</div>

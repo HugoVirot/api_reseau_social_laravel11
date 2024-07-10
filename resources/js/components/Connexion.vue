@@ -72,10 +72,9 @@ const logIn = async () => {
         .then(() => {
             // on tente la connexion
             axios.post('/api/login', { email: email.value, password: password.value })
-
                 .then(response => {
-                    console.log('.then')
-                    // si elle réussit : stockage des données utilisateur reçues dans le localstorage via le userStore
+                    console.log(response)
+                    // si elle réussit : stockage des données utilisateur reçues dans le userStore
                     userStore.storeUserData(response.data.user)
                     // redirection vers un composant affichant le message de succès "vous êtes connecté"         
                     router.push('/')

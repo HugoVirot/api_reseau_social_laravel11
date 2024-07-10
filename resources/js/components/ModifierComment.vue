@@ -43,7 +43,7 @@
                       type="file"
                       class="form-control text-dark"
                       name="image"
-                      autocomplete="image"
+                      v-on:change="onChange"
                     />
                   </div>
                 </div>
@@ -116,18 +116,26 @@ const router = useRouter();
 const content = ref("");
 const tags = ref("");
 const image = ref("");
+const formData = new FormData();
 
 const commentId = route.params.id;
 const validationErrors = ref([]);
 
-const editComment = async () => {
-  // on tente la connexion
-  await axios
-    .put("http://localhost:8000/api/comments/" + commentId, {
-      content: content.value,
-      tags: tags.value,
-    })
+// permet de placer une image dans formData dès qu'elle est sélectionnée
+const onChange = (e) => {
+  let chosenImage = e.target.files[0];
+  formData.append("image", chosenImage);
+};
 
+const editComment = async () => {
+
+  // on ajoute les données saisies au formData (l'image y est déjà)
+  formData.append("content", content.value);
+  formData.append("tags", tags.value);
+  formData.append("_method", "PUT");
+
+  await axios
+    .post("/api/comments/" + commentId, formData)
     .then((response) => {
       alert("Commentaire modifié avec succès !");
       router.push("/");

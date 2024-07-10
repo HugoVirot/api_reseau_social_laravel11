@@ -33,8 +33,8 @@
 
       <div
         v-if="
-          (userStore.userLoggedIn && userStore.id == post.user_id) ||
-          userStore.role == 'admin'
+          userStore.userLoggedIn &&
+          (userStore.id == post.user_id || userStore.role == 'admin')
         "
         class="row mt-3"
       >
@@ -53,7 +53,7 @@
       </div>
     </div>
     <!-- liste des commentaires du message -->
-    <CommentsList :comments="post.comments" />
+    <CommentsList :comments="post.comments" :postAuthorID="post.user_id" />
 
     <!-- formulaire pour ajouter un commentaire -->
     <CreerComment :postId="post.id" />

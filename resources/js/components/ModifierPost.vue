@@ -43,7 +43,7 @@
                       type="file"
                       class="form-control text-dark"
                       name="image"
-                      autocomplete="image"
+                      v-on:change="onChange"
                     />
                   </div>
                 </div>
@@ -116,19 +116,28 @@ const router = useRouter();
 const content = ref("");
 const tags = ref("");
 const image = ref("");
+const formData = new FormData();
 
 const postId = route.params.id;
 const validationErrors = ref([]);
 
-const editPost = async () => {
-  // on tente la connexion
-  await axios
-    .put("http://localhost:8000/api/posts/" + postId, {
-      content: content.value,
-      tags: tags.value,
-    })
+// permet de placer une image dans formData dès qu'elle est sélectionnée
+const onChange = (e) => {
+  let chosenImage = e.target.files[0];
+  formData.append("image", chosenImage);
+};
 
+const editPost = async () => {
+  // on ajoute les données saisies au formData (l'image y est déjà)
+  formData.append("content", content.value);
+  formData.append("tags", tags.value);
+  formData.append("_method", "PUT");
+
+  // on envoie tout cela vers l'api via un appel axios
+  await axios
+    .post("/api/posts/" + postId, formData)
     .then((response) => {
+      console.log(response);
       alert("Message modifié avec succès !");
       router.push("/");
     })

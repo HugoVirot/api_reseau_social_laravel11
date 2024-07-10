@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\File;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends Controller
 {
@@ -32,7 +34,7 @@ class UserController extends Controller
         // on applique la vérification de la fonction viewAny de la UserPolicy
         // => seul l'admin peut accéder à la liste des messages
         // => résultat identique à l'application du middleware "admin"
-        //$this->authorize('viewAny', $users); 
+        $this->authorize('viewAny', $users); 
 
         // On retourne les utilisateurs en JSON 
         return response()->json([
@@ -151,7 +153,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user, Request $request)
     {
         // policy pour vérifier que l'utilisateur est autorisé à supprimer le compte
         // critère : seul l'utilisateur peut supprimer son compte (ou l'admin)
@@ -167,6 +169,9 @@ class UserController extends Controller
             File::delete(public_path($imagePath));
         }
 
+        // déconnexion utilisateur
+        Auth::guard('web')->logout();
+        
         // on retourne la réponse contenant l'utilisateur supprimé
         return response()->json([
             'status' => true,
