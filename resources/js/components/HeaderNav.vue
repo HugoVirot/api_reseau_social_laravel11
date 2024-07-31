@@ -110,7 +110,6 @@ const logOutUser = async () => {
   // on réinitialise le store
   userStore.$reset();
 
-  // axios.post("/api/logout");
   try {
     await axios.post("/logout");
 
